@@ -1,0 +1,2 @@
+TTL = 3600
+SALT = "PUCRIO"
