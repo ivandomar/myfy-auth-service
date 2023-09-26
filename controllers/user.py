@@ -27,9 +27,10 @@ def create(body: CreateUserRequestSchema):
         session.close()
         
         return format_user_response(new_user), CREATED
+    except AttributeError as e:
+        return {"message": str(e)}, SEMANTIC_ERROR
     except Exception as e:
         return {"message": GENERAL_ERROR}, SYNTAX_ERROR
-    
     
 
 def delete(path: RemoveUserRequestSchema):
