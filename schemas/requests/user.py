@@ -8,13 +8,13 @@ class CreateUserRequestSchema(BaseModel):
     password: str
 
 class RemoveUserRequestSchema(BaseModel):
-    id: int
+    id: str
 
 class GetUserRequestSchema(BaseModel):
-    id: int
+    id: str
 
 class UpdateUserIdRequestSchema(BaseModel):
-    id: int
+    id: str
 
 class UpdateUserRequestSchema(BaseModel):
     name: str = None

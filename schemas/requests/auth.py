@@ -5,4 +5,4 @@ class LoginRequestSchema(BaseModel):
     password: str
 
 class LogoutRequestSchema(BaseModel):
-    id: int
+    id: str
