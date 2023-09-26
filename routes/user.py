@@ -1,7 +1,7 @@
 from flask_openapi3 import APIBlueprint, Tag
 
 from constants.http_statuses import OK, SEMANTIC_ERROR, SYNTAX_ERROR
-from controllers.user import create, delete, get, update
+from controllers.user import create, delete, check, update
 from schemas.responses.user import UserResponseSchema
 from schemas.responses.general import ErrorResponseSchema
 
@@ -32,7 +32,7 @@ user_blueprint.delete(
 )(delete)
 
 user_blueprint.get(
-    '/<user_id>',
+    '/<user_id>/<token>',
     tags=[user_tag],
     summary='Gets specified user',
     responses={
@@ -40,7 +40,7 @@ user_blueprint.get(
         str(SEMANTIC_ERROR): ErrorResponseSchema,
         str(SYNTAX_ERROR): ErrorResponseSchema
         }
-)(get)
+)(check)
 
 user_blueprint.put(
     '/<user_id>',

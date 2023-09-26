@@ -10,8 +10,9 @@ class CreateUserRequestSchema(BaseModel):
 class RemoveUserRequestSchema(BaseModel):
     id: str
 
-class GetUserRequestSchema(BaseModel):
-    id: str
+class CheckUserRequestSchema(BaseModel):
+    login: str
+    token: str
 
 class UpdateUserIdRequestSchema(BaseModel):
     id: str

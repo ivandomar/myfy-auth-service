@@ -1,15 +1,50 @@
 import hashlib
 
-from constants.error_messages import DUPLICATED_ELEMENT, GENERAL_ERROR, NOT_FOUND
-from constants.http_statuses import OK, CREATED, SEMANTIC_ERROR, SYNTAX_ERROR
+from constants.error_messages import INVALID_TOKEN, DUPLICATED_ELEMENT, GENERAL_ERROR, NOT_FOUND
+from constants.http_statuses import CREATED, OK, SEMANTIC_ERROR, SYNTAX_ERROR
 from database import Session
 from datetime import datetime
 from flask import request
 from formatters.user import format_user_response
-from models.user import User
-from schemas.requests.user import CreateUserRequestSchema, RemoveUserRequestSchema, UpdateUserIdRequestSchema, UpdateUserRequestSchema, GetUserRequestSchema
+from models import User, Token
+from schemas.requests.user import CheckUserRequestSchema, CreateUserRequestSchema, RemoveUserRequestSchema, UpdateUserIdRequestSchema, UpdateUserRequestSchema
 from sqlalchemy import or_
 
+
+def check(path: CheckUserRequestSchema):
+    id = path.id
+    token = path.token
+    
+    try:
+        session = Session()
+
+        user = session.query(User).filter(
+            User.id == id,
+            User.deleted_at == None
+        ).one_or_none()
+
+        if user is None:
+            raise ValueError(NOT_FOUND)
+
+        token = session.query(Token).filter(
+            Token.content == token,
+            Token.user_id == user.id,
+            Token.expiration_date > datetime.now(),
+            Token.deleted_at == None
+        ).one_or_none()
+
+        if token is None:
+            raise AttributeError(INVALID_TOKEN)
+
+        session.close()
+
+        return format_user_response(user), OK
+        
+    except(AttributeError, ValueError) as e:
+        return {"mesage": str(e)}, SEMANTIC_ERROR
+    except Exception as e:        
+        return {"mesage": str(e)}, SYNTAX_ERROR
+    
 
 def create(body: CreateUserRequestSchema):
     new_user = User(body.name, body.email, body.login, body.password)
@@ -50,29 +85,6 @@ def delete(path: RemoveUserRequestSchema):
     except Exception as e:        
         return {"mesage": GENERAL_ERROR}, SYNTAX_ERROR
 
-
-def get(path: GetUserRequestSchema):
-    id = path.id
-    
-    try:
-        session = Session()
-
-        user = session.query(User).filter(
-            User.id == id,
-            User.deleted_at == None
-        ).one_or_none()
-
-        session.close()
-
-        if user is None:
-            raise ValueError(NOT_FOUND)
-
-        return format_user_response(user), OK
-        
-    except ValueError as e:
-        return {"mesage": str(e)}, SEMANTIC_ERROR
-    except Exception as e:        
-        return {"mesage": str(e)}, SYNTAX_ERROR
 
 def update(path: UpdateUserIdRequestSchema, body: UpdateUserRequestSchema):
     id = path.id
