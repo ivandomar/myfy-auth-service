@@ -21,7 +21,7 @@ auth_blueprint.post(
 )(login)
 
 auth_blueprint.post(
-    '/<user_id>/logout',
+    '/<id>/logout',
     tags=[auth_tag],
     summary='Invalidates specified user authentication token',
     responses={

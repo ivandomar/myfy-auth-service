@@ -21,7 +21,7 @@ user_blueprint.post(
 )(create)
 
 user_blueprint.delete(
-    '/<user_id>',
+    '/<id>',
     tags=[user_tag],
     summary='Removes specified user',
     responses={
@@ -32,7 +32,7 @@ user_blueprint.delete(
 )(delete)
 
 user_blueprint.get(
-    '/<user_id>/<token>',
+    '/<id>/<token>',
     tags=[user_tag],
     summary='Gets specified user',
     responses={
@@ -43,7 +43,7 @@ user_blueprint.get(
 )(check)
 
 user_blueprint.put(
-    '/<user_id>',
+    '/<id>',
     tags=[user_tag],
     summary='Updates data of specified user',
     responses={
