@@ -1,6 +1,7 @@
 from constants.error_messages import DUPLICATED_ELEMENT, GENERAL_ERROR
 from constants.http_statuses import OK, CREATED, SEMANTIC_ERROR, SYNTAX_ERROR
 from database import Session
+from datetime import datetime
 from flask import request
 from formatters.user import format_user_response
 from models.user import User
@@ -35,8 +36,18 @@ def create(body: CreateUserRequestSchema):
 
 def delete(path: RemoveUserRequestSchema):
     id = path.id
+
+    try:
+        session = Session()
+        session.query(User).filter(User.id == id).update({'deleted_at': datetime.now()})
+        session.commit()
+        session.close()
         
-    return None, OK
+        return '', OK
+
+    except Exception as e:        
+        return {"mesage": GENERAL_ERROR}, SYNTAX_ERROR
+
 
 def get(path: GetUserRequestSchema):
     id = path.id
