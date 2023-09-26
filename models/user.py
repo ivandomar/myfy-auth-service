@@ -1,4 +1,5 @@
 import hashlib
+import uuid
 
 from datetime import datetime
 from sqlalchemy import Column, DateTime, String
@@ -22,6 +23,7 @@ class User(Base):
     children = relationship("Token")
 
     def __init__(self, name:str, email:str, login:str, password:str):
+        self.id = str(uuid.uuid4())
         self.name = name
         self.email = email
         self.login = login
