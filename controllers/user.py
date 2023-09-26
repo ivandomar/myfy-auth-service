@@ -1,5 +1,4 @@
-from constants.error_messages import DUPLICATED_ELEMENT, ELEMENT_NOT_FOUND, FOLDER_NOT_FOUND, GENERAL_ERROR, REQUIRED_CONTENT
-from constants.http_statuses import OK, CREATED, SEMANTIC_ERROR, SYNTAX_ERROR
+from constants.http_statuses import OK, CREATED
 from flask import request
 
 
