@@ -1,3 +1,5 @@
+import hashlib
+
 from constants.error_messages import DUPLICATED_ELEMENT, GENERAL_ERROR, NOT_FOUND
 from constants.http_statuses import OK, CREATED, SEMANTIC_ERROR, SYNTAX_ERROR
 from database import Session
@@ -75,4 +77,62 @@ def get(path: GetUserRequestSchema):
 def update(path: UpdateUserIdRequestSchema, body: UpdateUserRequestSchema):
     id = path.id
         
-    return None, OK
+    try:
+        session = Session()
+
+        user = session.query(User).filter(User.id == id).one_or_none()
+
+        if user is None:
+            raise ValueError(NOT_FOUND)
+
+        new_name = body.name or user.name
+        new_email = body.email or user.email
+        new_login = body.login or user.login
+        new_pasword = body.password or user.password
+
+        if new_login != user.login:
+            matching_element = session.query(User).filter(
+                User.login == user.login,
+                User.deleted_at == None,
+                User.id != user.id
+            ).one_or_none()
+
+            if matching_element is not None:
+                raise AttributeError(DUPLICATED_ELEMENT)
+            
+        if new_email != user.email:
+            matching_element = session.query(User).filter(
+                User.email == user.email,
+                User.deleted_at == None,
+                User.id != user.id
+            ).one_or_none()
+
+            if matching_element is not None:
+                raise AttributeError(DUPLICATED_ELEMENT)
+            
+        hash = hashlib.md5()
+        hashlib.update(bytes(new_pasword))
+
+        hashed_new_password = hash.hexdigest()
+        
+        new_data = {
+            'name': new_name,
+            'email': new_email,
+            'login': new_login,
+            'password': hashed_new_password,
+            'updated_at': datetime.now()
+        }
+
+        session.query(User).filter(User.id == id).update(new_data)
+
+        new_element = session.query(User).filter(User.id == id).one_or_none()
+
+        session.commit()
+        session.close()
+        
+        return format_user_response(new_element), OK
+
+    except(AttributeError, ValueError) as e:
+        return {"mesage": str(e)}, SEMANTIC_ERROR
+    except Exception as e:        
+        return {"mesage": GENERAL_ERROR}, SYNTAX_ERROR
