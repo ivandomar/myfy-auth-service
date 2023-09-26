@@ -1,12 +1,12 @@
 from constants.http_statuses import OK, CREATED
-from flask import request
+from schemas.requests.auth import LoginRequestSchema, LogoutRequestSchema
 
 
-def login(body):
+def login(body: LoginRequestSchema):
     return None, CREATED
     
 
-def logout(path, body):
+def logout(path: LogoutRequestSchema):
     id = path.id
         
     return None, OK
