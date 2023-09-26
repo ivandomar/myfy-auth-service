@@ -7,3 +7,5 @@ class UserResponseSchema(BaseModel):
     name: str
     login: str
     email: str
+    created_at: datetime
+    updated_at: datetime
