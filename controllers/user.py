@@ -1,4 +1,4 @@
-from constants.error_messages import DUPLICATED_ELEMENT, GENERAL_ERROR
+from constants.error_messages import DUPLICATED_ELEMENT, GENERAL_ERROR, NOT_FOUND
 from constants.http_statuses import OK, CREATED, SEMANTIC_ERROR, SYNTAX_ERROR
 from database import Session
 from datetime import datetime
@@ -51,8 +51,26 @@ def delete(path: RemoveUserRequestSchema):
 
 def get(path: GetUserRequestSchema):
     id = path.id
+    
+    try:
+        session = Session()
+
+        user = session.query(User).filter(
+            User.id == id,
+            User.deleted_at == None
+        ).one_or_none()
+
+        session.close()
+
+        if user is None:
+            raise ValueError(NOT_FOUND)
+
+        return format_user_response(user), OK
         
-    return None, OK
+    except ValueError as e:
+        return {"mesage": str(e)}, SEMANTIC_ERROR
+    except Exception as e:        
+        return {"mesage": str(e)}, SYNTAX_ERROR
 
 def update(path: UpdateUserIdRequestSchema, body: UpdateUserRequestSchema):
     id = path.id
