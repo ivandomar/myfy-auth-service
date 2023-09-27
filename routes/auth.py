@@ -25,7 +25,7 @@ auth_blueprint.post(
     tags=[auth_tag],
     summary='Invalidates specified user authentication token',
     responses={
-        str(OK): AuthResponseSchema,
+        str(OK): None,
         str(SEMANTIC_ERROR): ErrorResponseSchema,
         str(SYNTAX_ERROR): ErrorResponseSchema
         }

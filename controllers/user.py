@@ -12,14 +12,14 @@ from sqlalchemy import or_
 
 
 def check(path: CheckUserRequestSchema):
-    id = path.id
+    login = path.login
     token = path.token
     
     try:
         session = Session()
 
         user = session.query(User).filter(
-            User.id == id,
+            User.login == login,
             User.deleted_at == None
         ).one_or_none()
 

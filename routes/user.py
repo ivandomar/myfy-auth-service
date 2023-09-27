@@ -32,7 +32,7 @@ user_blueprint.delete(
 )(delete)
 
 user_blueprint.get(
-    '/<id>/<token>',
+    '/<login>/<token>',
     tags=[user_tag],
     summary='Gets specified user',
     responses={
