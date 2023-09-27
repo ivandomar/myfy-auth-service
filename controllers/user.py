@@ -123,7 +123,7 @@ def update(path: UpdateUserIdRequestSchema, body: UpdateUserRequestSchema):
                 raise AttributeError(DUPLICATED_ELEMENT)
             
         hash = hashlib.md5()
-        hashlib.update(bytes(new_pasword))
+        hash.update(bytes(new_pasword))
 
         hashed_new_password = hash.hexdigest()
         

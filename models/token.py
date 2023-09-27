@@ -27,7 +27,7 @@ class Token(Base):
         current_time = time.time()
 
         hash = hashlib.md5()
-        hashlib.update(bytes(token.SALT + current_time))
+        hash.update(bytes(token.SALT + current_time))
 
         self.content = hash.hexdigest()
         

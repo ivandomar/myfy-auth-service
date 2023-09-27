@@ -29,6 +29,6 @@ class User(Base):
         self.login = login
 
         hash = hashlib.md5()
-        hashlib.update(bytes(password))
+        hash.update(bytes(password, encoding='utf-8'))
 
         self.password = hash.hexdigest()
