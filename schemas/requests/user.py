@@ -18,7 +18,7 @@ class UpdateUserIdRequestSchema(BaseModel):
     id: str
 
 class UpdateUserRequestSchema(BaseModel):
-    name: str = None
-    email: str = None
-    login: str = None
-    password: str = None
+    name: str|None = None
+    email: str|None = None
+    login: str|None = None
+    password: str|None = None
